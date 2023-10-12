@@ -2,6 +2,7 @@ package com.webkingve.composeapp
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +20,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -25,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -57,34 +62,37 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun ViewContainer(){
+fun ViewContainer() {
     Scaffold(
-        topBar = {Toolbar()},
-        content = {Content()},
-        floatingActionButton = {Fab()},
+        topBar = { Toolbar() },
+        content = { Content() },
+        floatingActionButton = { Fab() },
         floatingActionButtonPosition = FabPosition.End
     )
 }
 
 @Composable
-fun Fab(){
+fun Fab() {
     val context = LocalContext.current
     FloatingActionButton(onClick = {
         Toast.makeText(context, "Felicidades", Toast.LENGTH_SHORT).show()
-    }){
+    }) {
         Text("X")
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Toolbar(){
-    TopAppBar(title = {Text("MyAPP", color = colorResource(id = R.color.purple_500))}, modifier = Modifier.background(Color.Cyan))
+fun Toolbar() {
+    TopAppBar(
+        title = { Text("MyAPP", color = colorResource(id = R.color.purple_500)) },
+        modifier = Modifier.background(Color.Cyan)
+    )
 }
 
 @Composable
 fun Content() {
-    var counter by rememberSaveable { mutableStateOf(0)}
+    var counter by rememberSaveable { mutableStateOf(0) }
 
     LazyColumn(
         modifier = Modifier
@@ -104,7 +112,7 @@ fun Content() {
                 Image(
                     painter = painterResource(id = R.drawable.ic_favorite),
                     contentDescription = null,
-                    modifier = Modifier.clickable{
+                    modifier = Modifier.clickable {
                         counter++
                     }
                 )
@@ -181,5 +189,32 @@ fun Content() {
 
             }
         }
+        item {
+            var show by rememberSaveable {
+                mutableStateOf(false)
+            }
+            Box(modifier = Modifier.fillMaxSize()) {
+                Button(onClick = {show = true}) {
+                    Text(text = "Dialogo")
+                }
+            }
+            MyDialog(show, {show = false}, { Log.i("Dev", "Click")})
+        }
+    }
+}
+
+@Composable
+fun MyDialog(show: Boolean, onDismiss: () -> Unit, onConfirm: () -> Unit) {
+    if (show){
+        AlertDialog(
+            onDismissRequest = {onDismiss()},
+            confirmButton = { TextButton(onClick = { onConfirm() }) {
+                Text("Confirm Button")
+            } },
+            dismissButton = { TextButton(onClick = { onDismiss() }) {
+                Text("Dismis button")
+            } },
+            title = { Text("Mi titulo") },
+            text = { Text("Mi texto descriptivo") })
     }
 }
