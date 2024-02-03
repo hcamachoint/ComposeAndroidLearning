@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ComposeApp"
+rootProject.name = "ComposeAndroidLearning"
 include(":app")
